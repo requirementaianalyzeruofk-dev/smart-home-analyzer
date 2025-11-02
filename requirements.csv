@@ -1,0 +1,21 @@
+requirement,label
+The owner can change the access code anytime.,Functional
+The door should respond quickly.,Non-Functional
+Only the tenant can unlock the door.,Functional
+The system must support logging activities.,Functional
+The app should look good.,Non-Functional
+The door must auto-lock after 10 seconds.,Functional
+Battery level should be visible to the owner.,Functional
+The system must be available 24/7.,Non-Functional
+The door should not unlock for unknown users.,Functional
+The system should be reliable.,Non-Functional
+Access code should be at least 6 digits.,Functional
+Notifications must be instant.,Non-Functional
+App should have simple UI.,Non-Functional
+Logs must be retained for 30 days.,Non-Functional
+Only admin can delete user access.,Functional
+The door should resist hacking attempts.,Non-Functional
+The system must support multiple users.,Functional
+The lock should be weather-resistant.,Non-Functional
+The app should load fast.,Non-Functional
+Users should receive SMS alerts.,Functional

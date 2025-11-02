@@ -1,0 +1,61 @@
+import sqlite3
+
+DB_NAME = "requirements.db"
+
+def setup_database():
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    # 1. إنشاء جدول الملفات (Files Table)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS requirements_files (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            file_name TEXT NOT NULL UNIQUE,
+            upload_date TEXT
+        )
+    """)
+
+    # 2. إنشاء جدول المتطلبات (Requirements Table)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS requirements (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            file_id INTEGER NOT NULL,
+            requirement_text TEXT NOT NULL,
+            is_functional INTEGER DEFAULT 0,
+            is_non_functional INTEGER DEFAULT 0,
+            is_ambiguous INTEGER DEFAULT 0,
+            is_measurable INTEGER DEFAULT 0,
+            notes TEXT,
+            FOREIGN KEY (file_id) REFERENCES requirements_files (id)
+        )
+    """)
+
+    # إدراج بيانات تجريبية
+    try:
+        cursor.execute("INSERT INTO requirements_files (file_name, upload_date) VALUES (?, date('now'))", ('Sample_Document.pdf',))
+        file_id = cursor.lastrowid
+        
+        test_data = [
+            (file_id, "The user must log in with a valid username and password.", 1, 0, 0, 1, 'Functional requirement'),
+            (file_id, "The system should be easy to use.", 0, 1, 1, 0, 'Ambiguous (not measurable)'),
+            (file_id, "The response time for any query shall not exceed 3 seconds.", 0, 1, 0, 1, 'Non-functional (performance)'),
+        ]
+        
+        cursor.executemany("""
+            INSERT INTO requirements (file_id, requirement_text, is_functional, is_non_functional, is_ambiguous, is_measurable, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, test_data)
+
+        conn.commit()
+        print("✅ Tables created and sample data inserted successfully!")
+
+    except sqlite3.IntegrityError:
+        print("💡 Tables already exist and contain sample data (skipping insertion).")
+    except Exception as e:
+        print(f"❌ An error occurred: {e}")
+        
+    finally:
+        conn.close()
+
+if __name__ == "__main__":
+    setup_database()
